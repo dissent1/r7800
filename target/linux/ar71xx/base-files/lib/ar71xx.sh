@@ -452,6 +452,9 @@ ar71xx_board_detect() {
 	*"Archer C5")
 		name="archer-c5"
 		;;
+	*"Archer C7 v4")
+		name="archer-c7-v4"
+		;;
 	*"Archer C58 v1")
 		name="archer-c58-v1"
 		;;
@@ -506,6 +509,9 @@ ar71xx_board_detect() {
 		;;
 	*"CF-E320N v2")
 		name="cf-e320n-v2"
+		;;
+	*"CF-E355AC")
+		name="cf-e355ac"
 		;;
 	*"CF-E380AC v1")
 		name="cf-e380ac-v1"
@@ -597,6 +603,9 @@ ar71xx_board_detect() {
 	*"Domino Pi")
 		name="gl-domino"
 		;;
+	*"DR342")
+		name="dr342"
+		;;
 	*"DR344")
 		name="dr344"
 		;;
@@ -671,6 +680,9 @@ ar71xx_board_detect() {
 		;;
 	*"GL-MIFI")
 		name="gl-mifi"
+		;;
+	*"GL-USB150")
+		name="gl-usb150"
 		;;
 	*"HiveAP-121")
 		name="hiveap-121"
@@ -905,6 +917,9 @@ ar71xx_board_detect() {
 	*"RouterBOARD 750GL")
 		name="rb-750gl"
 		;;
+	*"RouterBOARD 750P r2")
+		name="rb-750p-pbr2"
+		;;
 	*"RouterBOARD 750UP r2")
 		name="rb-750up-r2"
 		;;
@@ -950,6 +965,9 @@ ar71xx_board_detect() {
 	*"RouterBOARD LHG 5nD")
 		name="rb-lhg-5nd"
 		;;
+	*"RouterBOARD mAP 2nD")
+		name="rb-map-2nd"
+		;;
 	*"RouterBOARD mAP L-2nD")
 		name="rb-mapl-2nd"
 		;;
@@ -958,6 +976,9 @@ ar71xx_board_detect() {
 		;;
 	*"RouterBOARD SXT Lite5")
 		name="rb-sxt5n"
+		;;
+	*"RouterBOARD wAP 2nD r2")
+		name="rb-wap-2nd"
 		;;
 	*"RouterStation")
 		name="routerstation"
@@ -1037,7 +1058,7 @@ ar71xx_board_detect() {
 	*"TL-MR3420 v2")
 		name="tl-mr3420-v2"
 		;;
-	*TL-MR6400)
+	*"TL-MR6400")
 		name="tl-mr6400"
 		;;
 	*"TL-WA701ND v2")
@@ -1085,6 +1106,9 @@ ar71xx_board_detect() {
 	*"TL-WA901ND v4")
 		name="tl-wa901nd-v4"
 		;;
+	*"TL-WA901ND v5")
+		name="tl-wa901nd-v5"
+		;;
 	*"TL-WDR3320 v2")
 		name="tl-wdr3320-v2"
 		;;
@@ -1105,6 +1129,9 @@ ar71xx_board_detect() {
 		;;
 	*"TL-WR1041N v2")
 		name="tl-wr1041n-v2"
+		;;
+	*"TL-WR1043N v5")
+		name="tl-wr1043n-v5"
 		;;
 	*"TL-WR1043ND")
 		name="tl-wr1043nd"
@@ -1144,6 +1171,9 @@ ar71xx_board_detect() {
 		;;
 	*"TL-WR810N")
 		name="tl-wr810n"
+		;;
+	*"TL-WR810N v2")
+		name="tl-wr810n-v2"
 		;;
 	*"TL-WR840N v2")
 		name="tl-wr840n-v2"
@@ -1221,6 +1251,9 @@ ar71xx_board_detect() {
 		;;
 	"WeIO"*)
 		name="weio"
+		;;
+	*"WI2A-AC200i")
+		name="wi2a-ac200i"
 		;;
 	*"WHR-G301N")
 		name="whr-g301n"

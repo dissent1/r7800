@@ -11,7 +11,7 @@ include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/version.mk
 
 PKG_NAME:=base-files
-PKG_RELEASE:=174
+PKG_RELEASE:=178
 PKG_FLAGS:=nonshared
 
 PKG_FILE_DEPENDS:=$(PLATFORM_DIR)/ $(GENERIC_PLATFORM_DIR)/base-files/
@@ -40,27 +40,28 @@ define Package/base-files
 endef
 
 define Package/base-files/conffiles
+/etc/config/
 /etc/config/network
 /etc/config/system
+/etc/crontabs/
+/etc/dropbear/
+/etc/group
 /etc/hosts
 /etc/inittab
-/etc/group
+/etc/iproute2/rt_protos
+/etc/iproute2/rt_tables
 /etc/passwd
-/etc/shadow
 /etc/profile
+/etc/profile.d
 /etc/protocols
+/etc/rc.local
 /etc/services
+/etc/shadow
 /etc/shells
 /etc/sysctl.conf
-/etc/rc.local
-/etc/sysupgrade.conf
-/etc/config/
-/etc/dropbear/
-/etc/crontabs/
-/etc/sysctl.d/local.conf
 /etc/sysctl.d/
-/etc/iproute2/rt_tables
-/etc/iproute2/rt_protos
+/etc/sysctl.d/local.conf
+/etc/sysupgrade.conf
 $(call $(TARGET)/conffiles)
 endef
 
@@ -147,6 +148,7 @@ define Package/base-files/install
 
 	mkdir -p $(1)/CONTROL
 	mkdir -p $(1)/dev
+	mkdir -p $(1)/etc/config
 	mkdir -p $(1)/etc/crontabs
 	mkdir -p $(1)/etc/rc.d
 	mkdir -p $(1)/overlay

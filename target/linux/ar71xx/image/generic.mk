@@ -151,6 +151,15 @@ define Device/cf-e320n-v2
 endef
 TARGET_DEVICES += cf-e320n-v2
 
+define Device/cf-e355ac
+  DEVICE_TITLE := COMFAST CF-E355AC
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-ath10k ath10k-firmware-qca988x
+  BOARDNAME := CF-E355AC
+  IMAGE_SIZE := 16192k
+  MTDPARTS := spi0.0:64k(u-boot)ro,64k(art)ro,16192k(firmware),64k(art-backup)ro
+endef
+TARGET_DEVICES += cf-e355ac
+
 define Device/cf-e380ac-v1
   DEVICE_TITLE := COMFAST CF-E380AC v1
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-ath10k ath10k-firmware-qca988x
@@ -220,6 +229,26 @@ define Device/dragino2
 endef
 TARGET_DEVICES += dragino2
 
+define Device/ew-dorin
+  DEVICE_TITLE := Embedded Wireless Dorin Platform
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb-chipidea 
+  BOARDNAME = EW-DORIN
+  CONSOLE := ttyATH0,115200
+  IMAGE_SIZE = 16000k
+  MTDPARTS = spi0.0:256k(u-boot)ro,64k(u-boot-env),16000k(firmware),64k(art)ro
+endef
+TARGET_DEVICES += ew-dorin
+
+define Device/ew-dorin-router
+  DEVICE_TITLE := Embedded Wireless Dorin Router Platform
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb-chipidea 
+  BOARDNAME = EW-DORIN-ROUTER
+  CONSOLE := ttyATH0,115200
+  IMAGE_SIZE = 16000k
+  MTDPARTS = spi0.0:256k(u-boot)ro,64k(u-boot-env),16000k(firmware),64k(art)ro
+endef
+TARGET_DEVICES += ew-dorin-router
+
 define Device/weio
   DEVICE_TITLE := WeIO
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2
@@ -278,6 +307,19 @@ define Device/gl-mifi
 endef
 TARGET_DEVICES += gl-mifi
 
+define Device/gl-usb150
+  DEVICE_TITLE := GL.iNet GL-USB150
+  DEVICE_PACKAGES := -swconfig
+  BOARDNAME := GL-USB150
+  IMAGE_SIZE := 16000k
+  CONSOLE := ttyATH0,115200
+  MTDPARTS := spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,16000k(firmware),64k(art)ro
+  SUPPORTED_DEVICES := gl-usb150
+  IMAGE/sysupgrade.bin = append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | append-metadata | check-size $$$$(IMAGE_SIZE)
+endef
+TARGET_DEVICES += gl-usb150
+
 define Device/lima
   DEVICE_TITLE := 8devices Lima
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2
@@ -307,6 +349,15 @@ define Device/mr16
 endef
 TARGET_DEVICES += mr12 mr16
 
+define Device/dr342
+  DEVICE_TITLE := Wallys DR342
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 -swconfig
+  BOARDNAME := DR342
+  IMAGE_SIZE := 16000k
+  MTDPARTS := spi0.0:192k(u-boot)ro,64k(u-boot-env),64k(partition-table)ro,16000k(firmware),64k(art)ro
+endef
+TARGET_DEVICES += dr342
+
 define Device/dr344
   DEVICE_TITLE := Wallys DR344
   BOARDNAME := DR344
@@ -316,7 +367,6 @@ define Device/dr344
   MTDPARTS := spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,6336k(rootfs),1408k(kernel),64k(nvram),64k(art)ro,7744k@0x50000(firmware)
   IMAGE/sysupgrade.bin := append-rootfs | pad-rootfs | pad-to $$$$(ROOTFS_SIZE) | append-kernel | check-size $$$$(IMAGE_SIZE)
 endef
-TARGET_DEVICES += dr344
 
 define Device/dr531
   DEVICE_TITLE := Wallys DR531
@@ -852,6 +902,9 @@ define Device/wpj344
   $(Device/wpj-16m)
   DEVICE_TITLE := Compex WPJ344 (16MB flash)
   BOARDNAME := WPJ344
+  SUPPORTED_DEVICES := wpj344
+  IMAGE/sysupgrade.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | append-metadata | check-size $$$$(IMAGE_SIZE)
 endef
 
 define Device/wpj531
@@ -864,6 +917,9 @@ define Device/wpj558
   $(Device/wpj-16m)
   DEVICE_TITLE := Compex WPJ558 (16MB flash)
   BOARDNAME := WPJ558
+  SUPPORTED_DEVICES := wpj558
+  IMAGE/sysupgrade.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | append-metadata | check-size $$$$(IMAGE_SIZE)
 endef
 
 define Device/wpj563

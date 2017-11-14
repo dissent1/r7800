@@ -142,6 +142,10 @@ append_interface() {
 	xappend "--interface=$ifname"
 }
 
+append_listenaddress() {
+	xappend "--listen-address=$1"
+}
+
 append_notinterface() {
 	network_get_device ifname "$1" || ifname="$1"
 	xappend "--except-interface=$ifname"
@@ -319,7 +323,12 @@ dhcp_host_add() {
 	fi
 
 	if [ -n "$hostid" ]; then
-			hex_to_hostid hostid "$hostid"
+		hex_to_hostid hostid "$hostid"
+	fi
+
+	tags=""
+	if [ -n "$tag" ]; then
+		for t in $tag; do append tags "$t" ",set:"; done
 	fi
 
 	config_get_bool broadcast "$cfg" broadcast 0
@@ -327,7 +336,7 @@ dhcp_host_add() {
 
 	[ "$broadcast" = "0" ] && broadcast= || broadcast=",set:needs-broadcast"
 
-	hosttag="${networkid:+,set:${networkid}}${tag:+,set:${tag}}$broadcast"
+	hosttag="${networkid:+,set:${networkid}}${tags:+,set:${tags}}$broadcast"
 	nametime="${name:+,$name}${leasetime:+,$leasetime}"
 
 	if [ $DNSMASQ_DHCP_VER -eq 6 ]; then
@@ -378,8 +387,8 @@ dhcp_this_host_add() {
 				for lanaddr6 in $lanaddrs6 ; do
 					case "$lanaddr6" in
 					"${ulaprefix%%:/*}"*)
-							dhcp_domain_add "" "$routername" "$lanaddr6"
-							;;
+						dhcp_domain_add "" "$routername" "$lanaddr6"
+						;;
 					esac
 				done
 			fi
@@ -452,9 +461,7 @@ dhcp_add() {
 	config_get networkid "$cfg" networkid
 	[ -n "$networkid" ] || networkid="$net"
 
-	network_get_subnet subnet "$net" || return 0
 	network_get_device ifname "$net" || return 0
-	network_get_protocol proto "$net" || return 0
 
 	[ "$cachelocal" = "0" ] && network_get_dnsserver dnsserver "$net" && {
 		DNS_SERVERS="$DNS_SERVERS $dnsserver"
@@ -465,6 +472,9 @@ dhcp_add() {
 		dhcp_this_host_add "$net" "$ifname" "$ADD_WAN_FQDN"
 		return 0
 	}
+
+	network_get_subnet subnet "$net" || return 0
+	network_get_protocol proto "$net" || return 0
 
 	# Do not support non-static interfaces for now
 	[ static = "$proto" ] || return 0
@@ -829,6 +839,7 @@ dnsmasq_start()
 	append_parm "$cfg" "maxport" "--max-port"
 	append_parm "$cfg" "domain" "--domain"
 	append_parm "$cfg" "local" "--server"
+	config_list_foreach "$cfg" "listen_address" append_listenaddress
 	config_list_foreach "$cfg" "server" append_server
 	config_list_foreach "$cfg" "rev_server" append_rev_server
 	config_list_foreach "$cfg" "address" append_address

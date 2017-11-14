@@ -19,11 +19,9 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  include/asm-generic/vmlinux.lds.h | 63 ++++++++++++++++++++-------------------
  7 files changed, 55 insertions(+), 51 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 42435dfa5fc3..66cdf6a59b53 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -410,6 +410,11 @@ KBUILD_AFLAGS_MODULE  := -DMODULE
+@@ -409,6 +409,11 @@ KBUILD_AFLAGS_MODULE  := -DMODULE
  KBUILD_CFLAGS_MODULE  := -DMODULE
  KBUILD_LDFLAGS_MODULE = -T $(srctree)/scripts/module-common.lds $(if $(CONFIG_PROFILING),,-s)
  
@@ -35,9 +33,9 @@ index 42435dfa5fc3..66cdf6a59b53 100644
  # Read KERNELRELEASE from include/config/kernel.release (if it exists)
  KERNELRELEASE = $(shell cat include/config/kernel.release 2> /dev/null)
  KERNELVERSION = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
-@@ -631,11 +636,6 @@ include arch/$(SRCARCH)/Makefile
- KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
- KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
+@@ -633,11 +638,6 @@ KBUILD_CFLAGS	+= $(call cc-disable-warni
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
  
 -ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
 -KBUILD_CFLAGS	+= $(call cc-option,-ffunction-sections,)
@@ -47,8 +45,6 @@ index 42435dfa5fc3..66cdf6a59b53 100644
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,) $(EXTRA_OPTIMIZATION)
  else
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index b5d529fdffab..7f69418bf02c 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
 @@ -81,6 +81,7 @@ config ARM
@@ -59,8 +55,6 @@ index b5d529fdffab..7f69418bf02c 100644
  	select MODULES_USE_ELF_REL
  	select NO_BOOTMEM
  	select OF_EARLY_FLATTREE if OF
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index d50430c40045..6bdeb009a46d 100644
 --- a/arch/arm/boot/compressed/Makefile
 +++ b/arch/arm/boot/compressed/Makefile
 @@ -102,6 +102,7 @@ ifeq ($(CONFIG_FUNCTION_TRACER),y)
@@ -71,8 +65,6 @@ index d50430c40045..6bdeb009a46d 100644
  
  # -fstack-protector-strong triggers protection checks in this code,
  # but it is being used too early to link to meaningful stack_chk logic.
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index f7f55df0bf7b..e9d70c92d99f 100644
 --- a/arch/arm/kernel/vmlinux.lds.S
 +++ b/arch/arm/kernel/vmlinux.lds.S
 @@ -17,7 +17,7 @@
@@ -177,8 +169,6 @@ index f7f55df0bf7b..e9d70c92d99f 100644
  		__pv_table_end = .;
  	}
  	.init.data : {
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 3a97487b8b81..05e7bfeab2f9 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
 @@ -55,6 +55,7 @@ config MIPS
@@ -189,8 +179,6 @@ index 3a97487b8b81..05e7bfeab2f9 100644
  	select CPU_PM if CPU_IDLE
  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
  	select ARCH_BINFMT_ELF_STATE
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-index d5de67591735..de5f682b5597 100644
 --- a/arch/mips/kernel/vmlinux.lds.S
 +++ b/arch/mips/kernel/vmlinux.lds.S
 @@ -71,7 +71,7 @@ SECTIONS
@@ -211,11 +199,36 @@ index d5de67591735..de5f682b5597 100644
  		__mips_machines_end = .;
  	}
  
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 31e1d639abed..83784d9492b1 100644
 --- a/include/asm-generic/vmlinux.lds.h
 +++ b/include/asm-generic/vmlinux.lds.h
-@@ -114,7 +114,7 @@
+@@ -105,7 +105,7 @@
+ #ifdef CONFIG_FTRACE_MCOUNT_RECORD
+ #define MCOUNT_REC()	. = ALIGN(8);				\
+ 			VMLINUX_SYMBOL(__start_mcount_loc) = .; \
+-			*(__mcount_loc)				\
++			KEEP(*(__mcount_loc))			\
+ 			VMLINUX_SYMBOL(__stop_mcount_loc) = .;
+ #else
+ #define MCOUNT_REC()
+@@ -113,7 +113,7 @@
+ 
+ #ifdef CONFIG_TRACE_BRANCH_PROFILING
+ #define LIKELY_PROFILE()	VMLINUX_SYMBOL(__start_annotated_branch_profile) = .; \
+-				*(_ftrace_annotated_branch)			      \
++				KEEP(*(_ftrace_annotated_branch))		      \
+ 				VMLINUX_SYMBOL(__stop_annotated_branch_profile) = .;
+ #else
+ #define LIKELY_PROFILE()
+@@ -121,7 +121,7 @@
+ 
+ #ifdef CONFIG_PROFILE_ALL_BRANCHES
+ #define BRANCH_PROFILE()	VMLINUX_SYMBOL(__start_branch_profile) = .;   \
+-				*(_ftrace_branch)			      \
++				KEEP(*(_ftrace_branch))			      \
+ 				VMLINUX_SYMBOL(__stop_branch_profile) = .;
+ #else
+ #define BRANCH_PROFILE()
+@@ -130,7 +130,7 @@
  #ifdef CONFIG_KPROBES
  #define KPROBE_BLACKLIST()	. = ALIGN(8);				      \
  				VMLINUX_SYMBOL(__start_kprobe_blacklist) = .; \
@@ -224,7 +237,7 @@ index 31e1d639abed..83784d9492b1 100644
  				VMLINUX_SYMBOL(__stop_kprobe_blacklist) = .;
  #else
  #define KPROBE_BLACKLIST()
-@@ -123,10 +123,10 @@
+@@ -139,10 +139,10 @@
  #ifdef CONFIG_EVENT_TRACING
  #define FTRACE_EVENTS()	. = ALIGN(8);					\
  			VMLINUX_SYMBOL(__start_ftrace_events) = .;	\
@@ -237,7 +250,7 @@ index 31e1d639abed..83784d9492b1 100644
  			VMLINUX_SYMBOL(__stop_ftrace_enum_maps) = .;
  #else
  #define FTRACE_EVENTS()
-@@ -147,7 +147,7 @@
+@@ -163,7 +163,7 @@
  #ifdef CONFIG_FTRACE_SYSCALLS
  #define TRACE_SYSCALLS() . = ALIGN(8);					\
  			 VMLINUX_SYMBOL(__start_syscalls_metadata) = .;	\
@@ -246,7 +259,7 @@ index 31e1d639abed..83784d9492b1 100644
  			 VMLINUX_SYMBOL(__stop_syscalls_metadata) = .;
  #else
  #define TRACE_SYSCALLS()
-@@ -156,7 +156,7 @@
+@@ -172,7 +172,7 @@
  #ifdef CONFIG_SERIAL_EARLYCON
  #define EARLYCON_TABLE() STRUCT_ALIGN();			\
  			 VMLINUX_SYMBOL(__earlycon_table) = .;	\
@@ -255,7 +268,7 @@ index 31e1d639abed..83784d9492b1 100644
  			 VMLINUX_SYMBOL(__earlycon_table_end) = .;
  #else
  #define EARLYCON_TABLE()
-@@ -169,8 +169,8 @@
+@@ -185,8 +185,8 @@
  #define _OF_TABLE_1(name)						\
  	. = ALIGN(8);							\
  	VMLINUX_SYMBOL(__##name##_of_table) = .;			\
@@ -266,7 +279,7 @@ index 31e1d639abed..83784d9492b1 100644
  
  #define CLKSRC_OF_TABLES()	OF_TABLE(CONFIG_CLKSRC_OF, clksrc)
  #define IRQCHIP_OF_MATCH_TABLE() OF_TABLE(CONFIG_IRQCHIP, irqchip)
-@@ -193,7 +193,7 @@
+@@ -209,7 +209,7 @@
  #define KERNEL_DTB()							\
  	STRUCT_ALIGN();							\
  	VMLINUX_SYMBOL(__dtb_start) = .;				\
@@ -275,7 +288,7 @@ index 31e1d639abed..83784d9492b1 100644
  	VMLINUX_SYMBOL(__dtb_end) = .;
  
  /*
-@@ -214,16 +214,17 @@
+@@ -227,16 +227,17 @@
  	/* implement dynamic printk debug */				\
  	. = ALIGN(8);                                                   \
  	VMLINUX_SYMBOL(__start___jump_table) = .;                       \
@@ -296,7 +309,7 @@ index 31e1d639abed..83784d9492b1 100644
  
  /*
   * Data section helpers
-@@ -291,35 +292,35 @@
+@@ -304,35 +305,35 @@
  	/* PCI quirks */						\
  	.pci_fixup        : AT(ADDR(.pci_fixup) - LOAD_OFFSET) {	\
  		VMLINUX_SYMBOL(__start_pci_fixups_early) = .;		\
@@ -341,7 +354,7 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__end_builtin_fw) = .;			\
  	}								\
  									\
-@@ -397,7 +398,7 @@
+@@ -410,7 +411,7 @@
  									\
  	/* Kernel symbol table: strings */				\
          __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET) {	\
@@ -350,7 +363,7 @@ index 31e1d639abed..83784d9492b1 100644
  	}								\
  									\
  	/* __*init sections */						\
-@@ -410,14 +411,14 @@
+@@ -423,14 +424,14 @@
  	/* Built-in module parameters. */				\
  	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
  		VMLINUX_SYMBOL(__start___param) = .;			\
@@ -367,7 +380,7 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__stop___modver) = .;			\
  		. = ALIGN((align));					\
  		VMLINUX_SYMBOL(__end_rodata) = .;			\
-@@ -482,7 +483,7 @@
+@@ -496,7 +497,7 @@
  #define ENTRY_TEXT							\
  		ALIGN_FUNCTION();					\
  		VMLINUX_SYMBOL(__entry_text_start) = .;			\
@@ -376,7 +389,7 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__entry_text_end) = .;
  
  #if defined(CONFIG_FUNCTION_GRAPH_TRACER) || defined(CONFIG_KASAN)
-@@ -520,7 +521,7 @@
+@@ -534,7 +535,7 @@
  	. = ALIGN(align);						\
  	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__start___ex_table) = .;			\
@@ -385,7 +398,7 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__stop___ex_table) = .;			\
  	}
  
-@@ -536,9 +537,9 @@
+@@ -550,9 +551,9 @@
  #ifdef CONFIG_CONSTRUCTORS
  #define KERNEL_CTORS()	. = ALIGN(8);			   \
  			VMLINUX_SYMBOL(__ctors_start) = .; \
@@ -397,7 +410,7 @@ index 31e1d639abed..83784d9492b1 100644
  			VMLINUX_SYMBOL(__ctors_end) = .;
  #else
  #define KERNEL_CTORS()
-@@ -595,7 +596,7 @@
+@@ -609,7 +610,7 @@
  #define SBSS(sbss_align)						\
  	. = ALIGN(sbss_align);						\
  	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET) {				\
@@ -406,7 +419,7 @@ index 31e1d639abed..83784d9492b1 100644
  		*(.scommon)						\
  	}
  
-@@ -662,7 +663,7 @@
+@@ -676,7 +677,7 @@
  	. = ALIGN(8);							\
  	__bug_table : AT(ADDR(__bug_table) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__start___bug_table) = .;		\
@@ -415,7 +428,7 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__stop___bug_table) = .;			\
  	}
  #else
-@@ -674,7 +675,7 @@
+@@ -688,7 +689,7 @@
  	. = ALIGN(4);							\
  	.tracedata : AT(ADDR(.tracedata) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__tracedata_start) = .;			\
@@ -424,7 +437,7 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__tracedata_end) = .;			\
  	}
  #else
-@@ -691,7 +692,7 @@
+@@ -705,7 +706,7 @@
  #define INIT_SETUP(initsetup_align)					\
  		. = ALIGN(initsetup_align);				\
  		VMLINUX_SYMBOL(__setup_start) = .;			\
@@ -433,6 +446,3 @@ index 31e1d639abed..83784d9492b1 100644
  		VMLINUX_SYMBOL(__setup_end) = .;
  
  #define INIT_CALLS_LEVEL(level)						\
--- 
-2.11.0
-
